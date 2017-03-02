@@ -274,18 +274,18 @@ public class allSides {
                 memory[5][2][0] = help[1][2][2];
             }
             if (side == 3) { //поворот боковой грани (левая) ++
-                memory[0][0][2] = help[5][0][0];
-                memory[0][1][2] = help[5][0][1];
-                memory[0][2][2] = help[5][0][2];
-                memory[4][0][0] = help[0][2][0];
-                memory[4][0][1] = help[0][1][0];
-                memory[4][0][2] = help[0][0][0];
-                memory[2][0][0] = help[4][2][0];
-                memory[2][1][0] = help[4][2][1];
-                memory[2][2][0] = help[4][2][2];
-                memory[5][2][2] = help[2][0][2];
-                memory[5][2][1] = help[2][1][2];
-                memory[5][2][0] = help[2][2][2];
+                memory[0][0][0] = help[5][0][0];
+                memory[0][1][0] = help[5][1][0];
+                memory[0][2][0] = help[5][2][0];
+                memory[4][0][0] = help[0][0][0];
+                memory[4][1][0] = help[0][1][0];
+                memory[4][2][0] = help[0][2][0];
+                memory[2][0][2] = help[4][2][0];
+                memory[2][1][2] = help[4][1][0];
+                memory[2][2][2] = help[4][0][0];
+                memory[5][0][0] = help[2][2][2];
+                memory[5][1][0] = help[2][1][2];
+                memory[5][2][0] = help[2][0][2];
             }
         }
     }
