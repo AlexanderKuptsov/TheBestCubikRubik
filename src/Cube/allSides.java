@@ -6,14 +6,14 @@ import java.util.Scanner;
  * Created by shurik on 15.02.2017.
  */
 public class allSides {
-    private Color[][][] memory = new Color[6][3][3];
+    private Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
     private String[] difSides = new String[6];
 
     //конструктор
     private allSides() {
-        int count = 0;
+        int rndColor = 0;
         int countWhite = 0;
-        int countRed = 0;
+        int countPink = 0;
         int countGreen = 0;
         int countYellow = 0;
         int countBlue = 0;
@@ -23,25 +23,23 @@ public class allSides {
         colors[1] = Color.BLUE;
         colors[2] = Color.WHITE;
         colors[3] = Color.YELLOW;
-        colors[4] = Color.REDD;
+        colors[4] = Color.Pink;
         colors[5] = Color.GREEN;
-        boolean check = false;
 
         difSides[0] = "Front";
         difSides[1] = "Right";
         difSides[2] = "Back";
         difSides[3] = "Left";
-        difSides[4] = "Up";
-        difSides[5] = "Down";
-        String all = "";
+        difSides[4] = "Upside";
+        difSides[5] = "Downside";
+        boolean check = false;
         for (int i = 0; i < 6; i++) {
-            all += ("\nSide " + (i + 1) + " (" + difSides[i] + ")\n");
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
                     check = false;
                     while (check != true) {
-                        count = (int) (Math.random() * 6);
-                        switch (count) {
+                        rndColor = (int) (Math.random() * 6);
+                        switch (rndColor) { //проверка цветов( не должно быть больше 9 одного цвета)
                             case 0:
                                 countOrange++;
                                 check = (countOrange <= 9);
@@ -59,8 +57,8 @@ public class allSides {
                                 check = (countYellow <= 9);
                                 break;
                             case 4:
-                                countRed++;
-                                check = (countRed <= 9);
+                                countPink++;
+                                check = (countPink <= 9);
                                 break;
                             case 5:
                                 countGreen++;
@@ -68,13 +66,10 @@ public class allSides {
                                 break;
                         }
                     }
-                    all += (colors[count] + "\t ");
-                    memory[i][j][k] = colors[count];
+                    memory[i][j][k] = colors[rndColor];
                 }
-                all += ("\n");
             }
         }
-        System.out.print(all);
     }
 
     @Override
@@ -84,8 +79,8 @@ public class allSides {
         difSides[1] = "Right";
         difSides[2] = "Back";
         difSides[3] = "Left";
-        difSides[4] = "Up";
-        difSides[5] = "Down";
+        difSides[4] = "Upside";
+        difSides[5] = "Downside";
         for (int i = 0; i < 6; i++) {
             str.append("\nSide ").append(i + 1).append(" (").append(difSides[i]).append(")\n");
             for (int j = 0; j < 3; j++) {
@@ -98,8 +93,7 @@ public class allSides {
         return str.toString();
     }
 
-
-    public void rotate(int side, int direction) {
+    private void rotate(int side, int direction) { // метод поворота любой стороны кубика напрво или налево
         Color[][][] help = new Color[6][3][3];
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 3; j++) {
@@ -108,14 +102,11 @@ public class allSides {
         }
 
         if (direction == 1) { //поворот направо
-            memory[side][0][2] = help[side][0][0];
-            memory[side][1][2] = help[side][0][1];
-            memory[side][2][2] = help[side][0][2];
-            memory[side][0][1] = help[side][1][0];
-            memory[side][2][1] = help[side][1][2];
-            memory[side][0][0] = help[side][2][0];
-            memory[side][1][0] = help[side][2][1];
-            memory[side][2][0] = help[side][2][2];
+            for (int i = 0; i <= 2; i++) {
+                for (int k = 2; k >= 0; k--) {
+                    memory[side][i][2 - k] = help[side][k][i];
+                }
+            }
 
             if (side == 4) { //поворот верхней грани
                 for (int i = 0; i <= 3; i++) {
@@ -202,15 +193,11 @@ public class allSides {
         }
 
         if (direction == 2) { //поворот налево
-            memory[side][0][0] = help[side][0][2];
-            memory[side][0][1] = help[side][1][2];
-            memory[side][0][2] = help[side][2][2];
-            memory[side][1][0] = help[side][0][1];
-            memory[side][1][2] = help[side][2][1];
-            memory[side][2][0] = help[side][0][0];
-            memory[side][2][1] = help[side][1][0];
-            memory[side][2][2] = help[side][2][0];
-
+            for (int i = 0; i <= 2; i++) {
+                for (int k = 2; k >= 0; k--) {
+                    memory[side][2 - k][i] = help[side][i][k];
+                }
+            }
             if (side == 4) { //поворот верхней грани
                 for (int i = 0; i <= 3; i++) {
                     int k;
@@ -291,10 +278,33 @@ public class allSides {
     }
 
     public static void main(String[] args) {
-        allSides res = new allSides();
+        allSides result = new allSides();
         int side, direction;
-        for (int moves = 0; moves < 50; moves++) {
-            System.out.print("\n" + (50 - moves) + " moves left");
+        System.out.println("Choose difficulty (number of movements):\n" +
+                "(1)Beginner - 250   (2)Average skilled - 100   (3)Pro - 56   " +
+                "(4)Computer - 20   (5)Lucky - 1   default-100");
+        Scanner lvl = new Scanner((System.in));
+        int difficulty = 100;
+        switch (lvl.nextInt()) {
+            case 1:
+                difficulty = 500;
+                break;
+            case 2:
+                difficulty = 200;
+                break;
+            case 3:
+                difficulty = 100;
+                break;
+            case 4:
+                difficulty = 50;
+                break;
+            case 5:
+                difficulty = 1;
+                break;
+        }
+        System.out.println(result.toString());
+        for (int movements = difficulty; movements > 0; movements--) {
+            System.out.print("\n" + movements + " movements left");
             System.out.println("\nChoose the side (1-6)");
             Scanner in = new Scanner((System.in));
             side = in.nextInt();
@@ -302,12 +312,14 @@ public class allSides {
             Scanner input = new Scanner((System.in));
             direction = input.nextInt();
             if ((side >= 1 && side <= 6) && (direction == 1 || direction == 2)) {
-                res.rotate(side - 1, direction);
-                System.out.println(res.toString());
+                result.rotate(side - 1, direction);
+                System.out.println(result.toString());
             } else {
                 System.out.print("Write correct information!");
-                moves--;
+                movements++;
             }
         }
+        System.out.print("End of the game!");
+        System.exit(0);
     }
 }
