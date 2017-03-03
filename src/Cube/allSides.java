@@ -7,7 +7,6 @@ import java.util.Scanner;
  */
 public class allSides {
     private Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
-    private String[] difSides = new String[6];
 
     //конструктор
     private allSides() {
@@ -25,13 +24,6 @@ public class allSides {
         colors[3] = Color.YELLOW;
         colors[4] = Color.Pink;
         colors[5] = Color.GREEN;
-
-        difSides[0] = "Front";
-        difSides[1] = "Right";
-        difSides[2] = "Back";
-        difSides[3] = "Left";
-        difSides[4] = "Upside";
-        difSides[5] = "Downside";
         boolean check = false;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 3; j++) {
@@ -75,6 +67,7 @@ public class allSides {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+        String[] difSides = new String[6];
         difSides[0] = "Front";
         difSides[1] = "Right";
         difSides[2] = "Back";
@@ -287,16 +280,16 @@ public class allSides {
         int difficulty = 100;
         switch (lvl.nextInt()) {
             case 1:
-                difficulty = 500;
+                difficulty = 250;
                 break;
             case 2:
-                difficulty = 200;
-                break;
-            case 3:
                 difficulty = 100;
                 break;
+            case 3:
+                difficulty = 56;
+                break;
             case 4:
-                difficulty = 50;
+                difficulty = 20;
                 break;
             case 5:
                 difficulty = 1;
