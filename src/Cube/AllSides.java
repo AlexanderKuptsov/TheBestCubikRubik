@@ -5,11 +5,11 @@ import java.util.Scanner;
 /**
  * Created by shurik on 15.02.2017.
  */
-public class allSides {
+public class AllSides {
     private Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
 
     //конструктор
-    private allSides() {
+    private AllSides() {
         int rndColor = 0;
         int countWhite = 0;
         int countPink = 0;
@@ -253,7 +253,7 @@ public class allSides {
                 memory[5][2][1] = help[1][1][2];
                 memory[5][2][0] = help[1][2][2];
             }
-            if (side == 3) { //поворот боковой грани (левая) ++
+            if (side == 3) { //поворот боковой грани (левая)
                 memory[0][0][0] = help[5][0][0];
                 memory[0][1][0] = help[5][1][0];
                 memory[0][2][0] = help[5][2][0];
@@ -271,8 +271,7 @@ public class allSides {
     }
 
     public static void main(String[] args) {
-        allSides result = new allSides();
-        int side, direction;
+        AllSides result = new AllSides();
         System.out.println("Choose difficulty (number of movements):\n" +
                 "(1)Beginner - 250   (2)Average skilled - 100   (3)Pro - 56   " +
                 "(4)Computer - 20   (5)Lucky - 1   default-100");
@@ -296,6 +295,7 @@ public class allSides {
                 break;
         }
         System.out.println(result.toString());
+        int side, direction;
         for (int movements = difficulty; movements > 0; movements--) {
             System.out.print("\n" + movements + " movements left");
             System.out.println("\nChoose the side (1-6)");
