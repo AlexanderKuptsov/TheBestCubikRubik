@@ -1,5 +1,7 @@
 package Cube;
 
+import java.awt.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -238,6 +240,85 @@ public class AllSides {
         }
     }
 
+    public void rotationMain() { // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота)
+        Color[][][] help = new Color[6][3][3];
+        helpMemory(help);
+
+        System.out.println("Front side(advanced possibilities)");
+        System.out.println("Choose direction right/left  (default-right)");
+        Scanner input = new Scanner((System.in));
+        Direction direction = Direction.RIGHT;
+        try {
+            direction = Direction.valueOf(input.next().toUpperCase());
+        } catch (IllegalArgumentException e) { //проверка введенных данных
+            System.out.println("Incorrect information! Direction was set to right");
+        }
+        System.out.println("Choose sides you want to rotate(For example: 1 or 23 or 31  (default-1)");
+        Scanner info = new Scanner((System.in));
+        int numberOfSides = 1;
+        try {
+            numberOfSides = info.nextInt();
+        } catch (InputMismatchException e) { //проверка введенных данных
+            System.out.println("Incorrect information! Side was set to 1");
+        }
+        int line1;
+        int line2 = -1;
+        if (numberOfSides == 12 || numberOfSides == 13 || numberOfSides == 23 ||
+                numberOfSides == 21 || numberOfSides == 31 || numberOfSides == 32) {
+            line1 = (numberOfSides / 10) - 1;
+            line2 = (numberOfSides % 10) - 1;
+        } else {
+            if (numberOfSides == 1 || numberOfSides == 2 || numberOfSides == 3) {
+                line1 = numberOfSides - 1;
+            } else {
+                System.out.println("Incorrect information! Side was set to 1");
+                line1 = 0;
+                line2 = -1;
+            }
+        }
+
+        for (int sideNew = 0; sideNew < 4; sideNew++) {
+            int sideOld;
+            if (direction == Direction.RIGHT) {
+                sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
+                if (line1 == 0 || line2 == 0 || line1 == 2 || line2 == 2) {
+                    for (int i = 0; i <= 2; i++) { //поворот внутри верхней грани
+                        for (int k = 2; k >= 0; k--) {
+                            memory[4][i][2 - k] = help[4][k][i];
+                        }
+                    }
+                }
+                if (line1 == 2 || line2 == 2) {
+                    for (int i = 0; i <= 2; i++) { //поворот внутри нижней грани
+                        for (int k = 2; k >= 0; k--) {
+                            memory[5][i][2 - k] = help[5][k][i];
+                        }
+                    }
+                }
+            } else {
+                sideOld = sideNew != 3 ? sideNew + 1 : 0;// направо/налево
+                if (line1 == 0 || line2 == 0 || line1 == 2 || line2 == 2) {
+                    for (int i = 0; i <= 2; i++) { //поворот внутри верхней грани
+                        for (int k = 2; k >= 0; k--) {
+                            memory[4][2 - k][i] = help[4][i][k];
+                        }
+                    }
+                }
+                if (line1 == 2 || line2 == 2) {
+                    for (int i = 0; i <= 2; i++) { //поворот внутри нижней грани
+                        for (int k = 2; k >= 0; k--) {
+                            memory[5][2 - k][i] = help[5][i][k];
+                        }
+                    }
+                }
+            }
+            System.arraycopy(help[sideOld][line1], 0, memory[sideNew][line1], 0, 3);
+            if (line2 != -1)
+                System.arraycopy(help[sideOld][line2], 0, memory[sideNew][line2], 0, 3);
+        }
+
+    }
+
     public void shuffle() { // перемешевание кубика
         int numberOfRotations = (int) (Math.random() * 500);
         AllSides randomCube = new AllSides();
@@ -257,7 +338,14 @@ public class AllSides {
                 "(4)Computer - 20   (5)Lucky - 1   default-100");
         Scanner lvl = new Scanner((System.in));
         int difficulty = 100;
-        switch (lvl.nextInt()) {
+        int level;
+        try {
+            level = lvl.nextInt();
+        } catch (InputMismatchException e) { //проверка введенных данных
+            level = 2;
+            System.out.println("Incorrect information! Number of movements was set to 100");
+        }
+        switch (level) {
             case 1:
                 difficulty = 250;
                 break;
@@ -280,12 +368,30 @@ public class AllSides {
         Direction direction;
         for (int movements = difficulty; movements > 0; movements--) {
             System.out.print("\n" + movements + " movements left");
-            System.out.println("\nChoose the side (1-6)");
+            System.out.println("\nChoose the side front/right/back/left/upside/downside or write \"main\" if you want" +
+                    " to have advanced opportunities in rotating front side )");
             Scanner in = new Scanner((System.in));
-            side = Side.valueOf(in.next().toUpperCase());
+            try {
+                side = Side.valueOf(in.next().toUpperCase());
+            } catch (IllegalArgumentException e) { //проверка введенных данных
+                System.out.print("Write correct information!");
+                movements++;
+                continue;
+            }
+            if (side == Side.MAIN) {
+                result.rotationMain();
+                System.out.println(result.toString());
+                continue;
+            }
             System.out.println("Choose direction right/left");
             Scanner input = new Scanner((System.in));
-            direction = Direction.valueOf(input.next().toUpperCase());
+            try {
+                direction = Direction.valueOf(input.next().toUpperCase());
+            } catch (IllegalArgumentException e) { //проверка введенных данных
+                System.out.print("Write correct information!");
+                movements++;
+                continue;
+            }
             int sideNumber = -1;
             switch (side) {
                 case FRONT:
@@ -307,15 +413,9 @@ public class AllSides {
                     sideNumber = 5;
                     break;
             }
-            //проверка введенных данных
-            if ((sideNumber != -1) && (direction == Direction.RIGHT || direction == Direction.LEFT)) {
-                if (direction == Direction.RIGHT) result.rotateRight(sideNumber);
-                else result.rotateLeft(sideNumber);
-                System.out.println(result.toString());
-            } else {
-                System.out.print("Write correct information!");
-                movements++;
-            }
+            if (direction == Direction.RIGHT) result.rotateRight(sideNumber);
+            else result.rotateLeft(sideNumber);
+            System.out.println(result.toString());
         }
         System.out.print("End of the game!");
         System.exit(0);
