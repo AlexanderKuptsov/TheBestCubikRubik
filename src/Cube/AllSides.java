@@ -1,6 +1,7 @@
 package Cube;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -20,8 +21,8 @@ public class AllSides {
         colors[4] = Color.BLUE;
         colors[5] = Color.GREEN;
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (int j = 0; j < memory[0][0].length; j++) {
+                for (int k = 0; k < memory[0][0].length; k++) {
                     memory[i][j][k] = colors[i];
                 }
             }
@@ -40,8 +41,8 @@ public class AllSides {
         difSides[5] = Side.DOWNSIDE;
         for (int i = 0; i < 6; i++) {
             str.append("\nSide ").append(i + 1).append(" (").append(difSides[i]).append(")\n");
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (int j = 0; j < memory[0][0].length; j++) {
+                for (int k = 0; k < memory[0][0].length; k++) {
                     str.append(memory[i][j][k]).append("\t ");
                 }
                 str.append("\n");
@@ -50,16 +51,16 @@ public class AllSides {
         return str.toString();
     }
 
-    public static void helpMemory(Color[][][] help) { // вспомогательный массив
+    private static void helpMemory(Color[][][] help) { // вспомогательный массив
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 3; j++) {
-                System.arraycopy(memory[i][j], 0, help[i][j], 0, 3);
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(memory[i][j], 0, help[i][j], 0, memory[0][0].length);
             }
         }
     }
 
     private void rotateRight(int side) { // метод поворота любой стороны кубика напрво
-        Color[][][] help = new Color[6][3][3];
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
 
         for (int i = 0; i <= 2; i++) { //поворот внутри выбранной грани
@@ -155,7 +156,7 @@ public class AllSides {
     }
 
     private void rotateLeft(int side) { // метод поворота любой стороны кубика налево
-        Color[][][] help = new Color[6][3][3];
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
         for (int i = 0; i <= 2; i++) { //поворот внутри выбранной грани
             for (int k = 2; k >= 0; k--) {
@@ -240,11 +241,47 @@ public class AllSides {
         }
     }
 
+    private void right() {
+        System.out.println("Right side");
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
+        helpMemory(help);
+        int sideOld;
+        for (int sideNew = 0; sideNew < 4; sideNew++) {
+            sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+            }
+        }
+        for (int side = 4; side <= 5; side++) {
+            for (int i = 0; i <= 2; i++) { //поворот верхней и нижней грани
+                for (int k = 2; k >= 0; k--) {
+                    memory[side][2 - k][i] = help[side][i][k];
+                }
+            }
+        }
+        rotationMain();
+        helpMemory(help);
+        for (int sideNew = 3; sideNew >= 0; sideNew--) {
+            sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+            }
+        }
+        for (int side = 4; side <= 5; side++) {
+            for (int i = 0; i <= 2; i++) { //поворот верхней и нижней грани
+                for (int k = 2; k >= 0; k--) {
+                    memory[side][i][2 - k] = help[side][k][i];
+                }
+            }
+        }
+
+    }
+
     public void rotationMain() { // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота)
         Color[][][] help = new Color[6][3][3];
         helpMemory(help);
 
-        System.out.println("Front side(advanced possibilities)");
+        // System.out.println("Front side (advanced possibilities)");
         System.out.println("Choose direction right/left  (default-right)");
         Scanner input = new Scanner((System.in));
         Direction direction = Direction.RIGHT;
@@ -253,73 +290,82 @@ public class AllSides {
         } catch (IllegalArgumentException e) { //проверка введенных данных
             System.out.println("Incorrect information! Direction was set to right");
         }
-        System.out.println("Choose sides you want to rotate(For example: 1 or 23 or 31  (default-1)");
+        System.out.println("Choose sides you want to rotate (For example: 1 or 2 3 or 3 1)  (default-1)");
         Scanner info = new Scanner((System.in));
-        int numberOfSides = 1;
+        String numberOfSides;
+
         try {
-            numberOfSides = info.nextInt();
+            numberOfSides = info.next();
+            //difSides = info.nextInt();
         } catch (InputMismatchException e) { //проверка введенных данных
             System.out.println("Incorrect information! Side was set to 1");
+            numberOfSides = "1";
+            // difSides = 1;
         }
-        int line1;
-        int line2 = -1;
-        if (numberOfSides == 12 || numberOfSides == 13 || numberOfSides == 23 ||
-                numberOfSides == 21 || numberOfSides == 31 || numberOfSides == 32) {
-            line1 = (numberOfSides / 10) - 1;
-            line2 = (numberOfSides % 10) - 1;
+        int[] difSides = Arrays.stream(numberOfSides.split(" ")).mapToInt(s -> Integer.parseInt(s)).toArray();
+
+       /* if (difSides == 12 || difSides == 13 || difSides == 23 ||
+                difSides == 21 || difSides == 31 || difSides == 32) {
+            line1 = (difSides / 10) - 1;
+            line2 = (difSides % 10) - 1;
         } else {
-            if (numberOfSides == 1 || numberOfSides == 2 || numberOfSides == 3) {
-                line1 = numberOfSides - 1;
+            if (difSides == 1 || difSides == 2 || difSides == 3) {
+                line1 = difSides - 1;
             } else {
                 System.out.println("Incorrect information! Side was set to 1");
                 line1 = 0;
                 line2 = -1;
             }
-        }
-
+        } */
+        boolean checkUp = numberOfSides.contains("1");
+        //String str = (String) memory[0][0].length;
+        boolean checkDown = numberOfSides.contains("3");
+        int sideOld;
         for (int sideNew = 0; sideNew < 4; sideNew++) {
-            int sideOld;
             if (direction == Direction.RIGHT) {
                 sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
-                if (line1 == 0 || line2 == 0 || line1 == 2 || line2 == 2) {
-                    for (int i = 0; i <= 2; i++) { //поворот внутри верхней грани
-                        for (int k = 2; k >= 0; k--) {
-                            memory[4][i][2 - k] = help[4][k][i];
+                if (checkUp) {
+                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри верхней грани
+                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                            memory[4][i][memory[0][0].length - 1 - k] = help[4][k][i];
                         }
                     }
                 }
-                if (line1 == 2 || line2 == 2) {
-                    for (int i = 0; i <= 2; i++) { //поворот внутри нижней грани
-                        for (int k = 2; k >= 0; k--) {
-                            memory[5][i][2 - k] = help[5][k][i];
+                if (checkDown) {
+                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри нижней грани
+                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                            memory[5][i][memory[0][0].length - 1 - k] = help[5][k][i];
                         }
                     }
                 }
             } else {
                 sideOld = sideNew != 3 ? sideNew + 1 : 0;// направо/налево
-                if (line1 == 0 || line2 == 0 || line1 == 2 || line2 == 2) {
-                    for (int i = 0; i <= 2; i++) { //поворот внутри верхней грани
-                        for (int k = 2; k >= 0; k--) {
-                            memory[4][2 - k][i] = help[4][i][k];
+                if (checkUp) {
+                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри верхней грани
+                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                            memory[4][memory[0][0].length - 1 - k][i] = help[4][i][k];
                         }
                     }
                 }
-                if (line1 == 2 || line2 == 2) {
-                    for (int i = 0; i <= 2; i++) { //поворот внутри нижней грани
-                        for (int k = 2; k >= 0; k--) {
-                            memory[5][2 - k][i] = help[5][i][k];
+                if (checkDown) {
+                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри нижней грани
+                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                            memory[5][memory[0][0].length - 1 - k][i] = help[5][i][k];
                         }
                     }
                 }
             }
-            System.arraycopy(help[sideOld][line1], 0, memory[sideNew][line1], 0, 3);
-            if (line2 != -1)
-                System.arraycopy(help[sideOld][line2], 0, memory[sideNew][line2], 0, 3);
+            System.arraycopy(help[sideNew][difSides[0]-1], 0,
+                    memory[sideOld][difSides[0]-1], 0, memory[0][0].length);
+            if (numberOfSides.length()==3) {
+                System.arraycopy(help[sideNew][difSides[1]-1], 0,
+                        memory[sideOld][difSides[1]-1], 0, memory[0][0].length);
+            }
         }
 
     }
 
-    public void shuffle() { // перемешевание кубика
+    private void shuffle() { // перемешевание кубика
         int numberOfRotations = (int) (Math.random() * 500);
         AllSides randomCube = new AllSides();
         for (int i = 0; i < numberOfRotations; i++) {
@@ -378,12 +424,7 @@ public class AllSides {
                 movements++;
                 continue;
             }
-            if (side == Side.MAIN) {
-                result.rotationMain();
-                System.out.println(result.toString());
-                continue;
-            }
-            System.out.println("Choose direction right/left");
+           /* System.out.println("Choose direction right/left");
             Scanner input = new Scanner((System.in));
             try {
                 direction = Direction.valueOf(input.next().toUpperCase());
@@ -391,30 +432,36 @@ public class AllSides {
                 System.out.print("Write correct information!");
                 movements++;
                 continue;
-            }
+            }*/
             int sideNumber = -1;
             switch (side) {
+                case MAIN:
+                    System.out.println("Front side");
+                    result.rotationMain();
+                    System.out.println(result.toString());
+                    break;
                 case FRONT:
-                    sideNumber = 0;
+
                     break;
                 case RIGHT:
-                    sideNumber = 1;
+                    result.right();
                     break;
                 case BACK:
-                    sideNumber = 2;
+
                     break;
                 case LEFT:
-                    sideNumber = 3;
+
                     break;
                 case UPSIDE:
-                    sideNumber = 4;
+
                     break;
                 case DOWNSIDE:
-                    sideNumber = 5;
+
                     break;
             }
-            if (direction == Direction.RIGHT) result.rotateRight(sideNumber);
-            else result.rotateLeft(sideNumber);
+            //if (direction == Direction.RIGHT) result.rotateRight(sideNumber);
+            //else result.rotateLeft(sideNumber);
+
             System.out.println(result.toString());
         }
         System.out.print("End of the game!");
