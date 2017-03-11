@@ -59,320 +59,162 @@ public class AllSides {
         }
     }
 
-    private void rotateRight(int side) { // метод поворота любой стороны кубика напрво
+    private void swipeAnySideRight(int side) { //поворот внутри выбранной грани направо
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
-
-        for (int i = 0; i <= 2; i++) { //поворот внутри выбранной грани
-            for (int k = 2; k >= 0; k--) {
-                memory[side][i][2 - k] = help[side][k][i];
+        for (int i = 0; i < memory[0][0].length; i++) {
+            for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                memory[side][i][memory[0][0].length - 1 - k] = help[side][k][i];
             }
-        }
-
-        if (side == 4) { //поворот верхней грани
-            for (int i = 0; i <= 3; i++) {
-                int k;
-                if (i == 0) k = 3;
-                else k = i - 1;
-                memory[i][0][0] = help[k][0][0];
-                memory[i][0][1] = help[k][0][1];
-                memory[i][0][2] = help[k][0][2];
-            }
-        }
-        if (side == 5) { //поворот нижней грани
-            for (int i = 0; i <= 3; i++) {
-                int k;
-                if (i == 0) k = 3;
-                else k = i - 1;
-                memory[i][2][0] = help[k][2][0];
-                memory[i][2][1] = help[k][2][1];
-                memory[i][2][2] = help[k][2][2];
-            }
-        }
-        if (side == 1) { //поворот боковой грани (правая)
-            for (int i = 0; i <= 2; i += 2) {
-                int k, j = 0;
-                if (i == 0) k = 5;
-                else {
-                    k = 4;
-                    j = 2;
-                }
-                memory[i][0][2] = help[k][j][2];
-                memory[i][1][2] = help[k][1][2];
-                memory[i][2][2] = help[k][2 - j][2];
-                memory[k][0][2] = help[2 - i][2 - j][2];
-                memory[k][1][2] = help[2 - i][1][2];
-                memory[k][2][2] = help[2 - i][j][2];
-            }
-        }
-        if (side == 2) { //поворот боковой грани (задняя)
-            for (int i = 1; i <= 3; i += 2) {
-                int k, j = 0;
-                if (i == 1) k = 5;
-                else {
-                    k = 4;
-                    j = 2;
-                }
-                memory[i][0][2 - j] = help[k][2 - j][2];
-                memory[i][1][2 - j] = help[k][2 - j][1];
-                memory[i][2][2 - j] = help[k][2 - j][0];
-                memory[k][2 - j][0] = help[4 - i][0][j];
-                memory[k][2 - j][1] = help[4 - i][1][j];
-                memory[k][2 - j][2] = help[4 - i][2][j];
-            }
-        }
-        if (side == 3) { //поворот боковой грани (левая)
-            for (int i = 0; i <= 2; i += 2) {
-                int k, j = 0;
-                if (i == 0) k = 4;
-                else {
-                    k = 5;
-                    j = 2;
-                }
-                memory[i][0][j] = help[k][j][0];
-                memory[i][1][j] = help[k][1][0];
-                memory[i][2][j] = help[k][2 - j][0];
-                memory[k][0][0] = help[2 - i][2 - j][2 - j];
-                memory[k][1][0] = help[2 - i][1][2 - j];
-                memory[k][2][0] = help[2 - i][j][2 - j];
-            }
-        }
-        if (side == 0) { //поворот боковой грани (фронтальная)
-            memory[4][2][0] = help[3][2][2];
-            memory[4][2][1] = help[3][1][2];
-            memory[4][2][2] = help[3][0][2];
-            memory[1][0][0] = help[4][2][0];
-            memory[1][1][0] = help[4][2][1];
-            memory[1][2][0] = help[4][2][2];
-            memory[5][0][0] = help[1][2][0];
-            memory[5][0][1] = help[1][1][0];
-            memory[5][0][2] = help[1][0][0];
-            memory[3][0][2] = help[5][0][0];
-            memory[3][1][2] = help[5][0][1];
-            memory[3][2][2] = help[5][0][2];
-        }
-
-
-    }
-
-    private void rotateLeft(int side) { // метод поворота любой стороны кубика налево
-        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
-        helpMemory(help);
-        for (int i = 0; i <= 2; i++) { //поворот внутри выбранной грани
-            for (int k = 2; k >= 0; k--) {
-                memory[side][2 - k][i] = help[side][i][k];
-            }
-        }
-        if (side == 4) { //поворот верхней грани
-            for (int i = 0; i <= 3; i++) {
-                int k;
-                if (i == 3) k = 0;
-                else k = i + 1;
-                memory[i][0][0] = help[k][0][0];
-                memory[i][0][1] = help[k][0][1];
-                memory[i][0][2] = help[k][0][2];
-            }
-        }
-        if (side == 5) { //поворот нижней грани грани
-            for (int i = 0; i <= 4; i++) {
-                int k;
-                if (i == 3) k = 0;
-                else k = i + 1;
-                memory[i][2][0] = help[k][2][0];
-                memory[i][2][1] = help[k][2][1];
-                memory[i][2][2] = help[k][2][2];
-            }
-        }
-        if (side == 0) { //поворот боковой грани (фронтальная)
-            memory[4][2][0] = help[1][0][0];
-            memory[4][2][1] = help[1][1][0];
-            memory[4][2][2] = help[1][2][0];
-            memory[1][0][0] = help[5][0][2];
-            memory[1][1][0] = help[5][0][1];
-            memory[1][2][0] = help[5][0][0];
-            memory[5][0][0] = help[3][0][2];
-            memory[5][0][1] = help[3][1][2];
-            memory[5][0][2] = help[3][2][2];
-            memory[3][0][2] = help[4][2][2];
-            memory[3][1][2] = help[4][2][1];
-            memory[3][2][2] = help[4][2][0];
-        }
-        if (side == 1) { //поворот боковой грани (правая)
-            memory[0][0][2] = help[4][0][2];
-            memory[0][1][2] = help[4][1][2];
-            memory[0][2][2] = help[4][2][2];
-            memory[4][0][2] = help[2][2][0];
-            memory[4][1][2] = help[2][1][0];
-            memory[4][2][2] = help[2][0][0];
-            memory[2][0][0] = help[5][2][2];
-            memory[2][1][0] = help[5][1][2];
-            memory[2][2][0] = help[5][0][2];
-            memory[5][0][2] = help[0][0][2];
-            memory[5][1][2] = help[0][1][2];
-            memory[5][2][2] = help[0][2][2];
-        }
-        if (side == 2) { //поворот боковой грани (задняя)
-            memory[1][0][2] = help[4][0][0];
-            memory[1][1][2] = help[4][0][1];
-            memory[1][2][2] = help[4][0][2];
-            memory[4][0][0] = help[3][2][0];
-            memory[4][0][1] = help[3][1][0];
-            memory[4][0][2] = help[3][0][0];
-            memory[3][0][0] = help[5][2][0];
-            memory[3][1][0] = help[5][2][1];
-            memory[3][2][0] = help[5][2][2];
-            memory[5][2][2] = help[1][0][2];
-            memory[5][2][1] = help[1][1][2];
-            memory[5][2][0] = help[1][2][2];
-        }
-        if (side == 3) { //поворот боковой грани (левая)
-            memory[0][0][0] = help[5][0][0];
-            memory[0][1][0] = help[5][1][0];
-            memory[0][2][0] = help[5][2][0];
-            memory[4][0][0] = help[0][0][0];
-            memory[4][1][0] = help[0][1][0];
-            memory[4][2][0] = help[0][2][0];
-            memory[2][0][2] = help[4][2][0];
-            memory[2][1][2] = help[4][1][0];
-            memory[2][2][2] = help[4][0][0];
-            memory[5][0][0] = help[2][2][2];
-            memory[5][1][0] = help[2][1][2];
-            memory[5][2][0] = help[2][0][2];
         }
     }
 
-    private void right() {
-        System.out.println("Right side");
+    private void swipeAnySideLeft(int side) { //поворот внутри выбранной грани налево
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
+        helpMemory(help);
+        for (int i = 0; i < memory[0][0].length; i++) {
+            for (int k = memory[0][0].length - 1; k >= 0; k--) {
+                memory[side][memory[0][0].length - 1 - k][i] = help[side][i][k];
+            }
+        }
+    }
+
+    private void rightSwipe(int count, Direction direction, String numberOfSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
         int sideOld;
-        for (int sideNew = 0; sideNew < 4; sideNew++) {
-            sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
-            for (int j = 0; j < memory[0][0].length; j++) {
-                System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
-            }
-        }
-        for (int side = 4; side <= 5; side++) {
-            for (int i = 0; i <= 2; i++) { //поворот верхней и нижней грани
-                for (int k = 2; k >= 0; k--) {
-                    memory[side][2 - k][i] = help[side][i][k];
+        for (int swipe = 0; swipe <= count; swipe++) {
+            for (int sideNew = 0; sideNew < 4; sideNew++) {
+                sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
+                for (int j = 0; j < memory[0][0].length; j++) {
+                    System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
                 }
             }
+            swipeAnySideRight(4);
+            swipeAnySideLeft(5);
         }
-        rotationMain();
+        rotationMain(direction, numberOfSides);
         helpMemory(help);
-        for (int sideNew = 3; sideNew >= 0; sideNew--) {
-            sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
-            for (int j = 0; j < memory[0][0].length; j++) {
-                System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
-            }
-        }
-        for (int side = 4; side <= 5; side++) {
-            for (int i = 0; i <= 2; i++) { //поворот верхней и нижней грани
-                for (int k = 2; k >= 0; k--) {
-                    memory[side][i][2 - k] = help[side][k][i];
+        for (int swipe = 0; swipe <= count; swipe++) {
+            for (int sideNew = 3; sideNew >= 0; sideNew--) {
+                sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
+                for (int j = 0; j < memory[0][0].length; j++) {
+                    System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
                 }
             }
+            swipeAnySideLeft(4);
+            swipeAnySideRight(5);
         }
-
     }
 
-    public void rotationMain() { // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота)
+    private void upDownSwipe(int count, Direction direction, String numberOfSides) {
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
+        helpMemory(help);
+        int sideOld = count == 0 ? 2 : 0;
+        int sideNew = count == 0 ? 0 : 2;
+        for (int j = 0; j < memory[0][0].length; j++) {
+            System.arraycopy(help[4][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+        }
+        for (int j = 0; j < memory[0][0].length; j++) {
+            System.arraycopy(help[sideOld][j], 0, memory[4][j], 0, memory[0][0].length);
+        }
+        for (int j = 0; j < memory[0][0].length; j++) {
+            System.arraycopy(help[sideNew][j], 0, memory[5][j], 0, memory[0][0].length);
+        }
+        for (int j = 0; j < memory[0][0].length; j++) {
+            System.arraycopy(help[5][j], 0, memory[sideOld][j], 0, memory[0][0].length);
+        }
+        swipeAnySideRight(3);
+        swipeAnySideLeft(1);
+
+        rotationMain(direction, numberOfSides);
+        helpMemory(help);
+
+        for (int swipe = 0; swipe <= count; swipe++) {
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideNew][j], 0, memory[4][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[4][j], 0, memory[sideOld][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[5][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideOld][j], 0, memory[5][j], 0, memory[0][0].length);
+            }
+            swipeAnySideLeft(3);
+            swipeAnySideRight(1);
+        }
+    }
+
+    // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота)
+    private void rotationMain(Direction direction, String numberOfSides) {
         Color[][][] help = new Color[6][3][3];
         helpMemory(help);
 
-        // System.out.println("Front side (advanced possibilities)");
-        System.out.println("Choose direction right/left  (default-right)");
-        Scanner input = new Scanner((System.in));
-        Direction direction = Direction.RIGHT;
-        try {
-            direction = Direction.valueOf(input.next().toUpperCase());
-        } catch (IllegalArgumentException e) { //проверка введенных данных
-            System.out.println("Incorrect information! Direction was set to right");
-        }
-        System.out.println("Choose sides you want to rotate (For example: 1 or 2 3 or 3 1)  (default-1)");
-        Scanner info = new Scanner((System.in));
-        String numberOfSides;
-
-        try {
-            numberOfSides = info.next();
-            //difSides = info.nextInt();
-        } catch (InputMismatchException e) { //проверка введенных данных
-            System.out.println("Incorrect information! Side was set to 1");
-            numberOfSides = "1";
-            // difSides = 1;
-        }
-        int[] difSides = Arrays.stream(numberOfSides.split(" ")).mapToInt(s -> Integer.parseInt(s)).toArray();
-
-       /* if (difSides == 12 || difSides == 13 || difSides == 23 ||
-                difSides == 21 || difSides == 31 || difSides == 32) {
-            line1 = (difSides / 10) - 1;
-            line2 = (difSides % 10) - 1;
-        } else {
-            if (difSides == 1 || difSides == 2 || difSides == 3) {
-                line1 = difSides - 1;
-            } else {
-                System.out.println("Incorrect information! Side was set to 1");
-                line1 = 0;
-                line2 = -1;
-            }
-        } */
+        int[] difSides = Arrays.stream(numberOfSides.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
         boolean checkUp = numberOfSides.contains("1");
-        //String str = (String) memory[0][0].length;
         boolean checkDown = numberOfSides.contains("3");
+
+        if (direction == Direction.RIGHT) {
+            if (checkUp) {
+                swipeAnySideLeft(4);
+            }
+            if (checkDown) {
+                swipeAnySideRight(5);
+            }
+        } else {
+            if (checkUp) {
+                swipeAnySideRight(4);
+            }
+            if (checkDown) {
+                swipeAnySideLeft(5);
+            }
+        }
         int sideOld;
         for (int sideNew = 0; sideNew < 4; sideNew++) {
             if (direction == Direction.RIGHT) {
                 sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
-                if (checkUp) {
-                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри верхней грани
-                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
-                            memory[4][i][memory[0][0].length - 1 - k] = help[4][k][i];
-                        }
-                    }
-                }
-                if (checkDown) {
-                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри нижней грани
-                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
-                            memory[5][i][memory[0][0].length - 1 - k] = help[5][k][i];
-                        }
-                    }
-                }
             } else {
                 sideOld = sideNew != 3 ? sideNew + 1 : 0;// направо/налево
-                if (checkUp) {
-                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри верхней грани
-                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
-                            memory[4][memory[0][0].length - 1 - k][i] = help[4][i][k];
-                        }
-                    }
-                }
-                if (checkDown) {
-                    for (int i = 0; i < memory[0][0].length; i++) { //поворот внутри нижней грани
-                        for (int k = memory[0][0].length - 1; k >= 0; k--) {
-                            memory[5][memory[0][0].length - 1 - k][i] = help[5][i][k];
-                        }
-                    }
-                }
             }
-            System.arraycopy(help[sideNew][difSides[0]-1], 0,
-                    memory[sideOld][difSides[0]-1], 0, memory[0][0].length);
-            if (numberOfSides.length()==3) {
-                System.arraycopy(help[sideNew][difSides[1]-1], 0,
-                        memory[sideOld][difSides[1]-1], 0, memory[0][0].length);
+            for (int i = 0; i < difSides.length; i++) {
+                int difSide = difSides[i] - 1;
+                System.arraycopy(help[sideOld][difSide], 0,
+                        memory[sideNew][difSide], 0, memory[0][0].length);
             }
         }
-
     }
 
     private void shuffle() { // перемешевание кубика
         int numberOfRotations = (int) (Math.random() * 500);
-        AllSides randomCube = new AllSides();
         for (int i = 0; i < numberOfRotations; i++) {
             int randomSide = (int) (Math.random() * 6);
-            int randomDirection = (int) (Math.random() * 2);
-            if (randomDirection == 0) randomCube.rotateRight(randomSide);
-            else randomCube.rotateLeft(randomSide);
+            int randomDirectionNum = (int) (Math.random() * 2);
+            Direction randomDirection = randomDirectionNum == 0 ? Direction.RIGHT : Direction.LEFT;
+            int randomLinesNum = (int) (Math.random() * 2);
+            String randomLines = randomLinesNum == 0 ? "1" : "3";
+            switch (randomSide) {
+                case 0:
+                    rotationMain(randomDirection, randomLines);
+                    break;
+                case 1:
+                    rightSwipe(0, randomDirection, randomLines);
+                    break;
+                case 2:
+                    rightSwipe(1, randomDirection, randomLines);
+                    break;
+                case 3:
+                    rightSwipe(2, randomDirection, randomLines);
+                    break;
+                case 4:
+                    upDownSwipe(0, randomDirection, randomLines);
+                    break;
+                case 5:
+                    upDownSwipe(1, randomDirection, randomLines);
+                    break;
+            }
         }
     }
 
@@ -414,17 +256,17 @@ public class AllSides {
         Direction direction;
         for (int movements = difficulty; movements > 0; movements--) {
             System.out.print("\n" + movements + " movements left");
-            System.out.println("\nChoose the side front/right/back/left/upside/downside or write \"main\" if you want" +
-                    " to have advanced opportunities in rotating front side )");
+            System.out.println("\nChoose the side front: right / back / left / upside / downside");
             Scanner in = new Scanner((System.in));
             try {
                 side = Side.valueOf(in.next().toUpperCase());
+                System.out.println(side + " side");
             } catch (IllegalArgumentException e) { //проверка введенных данных
                 System.out.print("Write correct information!");
                 movements++;
                 continue;
             }
-           /* System.out.println("Choose direction right/left");
+            System.out.println("Choose direction right / left");
             Scanner input = new Scanner((System.in));
             try {
                 direction = Direction.valueOf(input.next().toUpperCase());
@@ -432,36 +274,39 @@ public class AllSides {
                 System.out.print("Write correct information!");
                 movements++;
                 continue;
-            }*/
-            int sideNumber = -1;
+            }
+            System.out.println(" Choose sides you want to rotate (For example: 1 or 2,3 or 3,1)");
+            Scanner info = new Scanner((System.in));
+            String numberOfSides;
+            try {
+                numberOfSides = info.next();
+            } catch (InputMismatchException e) { //проверка введенных данных
+                System.out.println("Write correct information!");
+                movements++;
+                continue;
+            }
             switch (side) {
-                case MAIN:
-                    System.out.println("Front side");
-                    result.rotationMain();
-                    System.out.println(result.toString());
-                    break;
                 case FRONT:
-
+                    result.rotationMain(direction, numberOfSides);
                     break;
                 case RIGHT:
-                    result.right();
+                    result.rightSwipe(0, direction, numberOfSides);
                     break;
                 case BACK:
-
+                    result.rightSwipe(1, direction, numberOfSides);
                     break;
                 case LEFT:
-
+                    result.rightSwipe(2, direction, numberOfSides);
                     break;
                 case UPSIDE:
-
+                    result.upDownSwipe(0, direction, numberOfSides);
                     break;
                 case DOWNSIDE:
-
+                    result.upDownSwipe(1, direction, numberOfSides);
                     break;
             }
             //if (direction == Direction.RIGHT) result.rotateRight(sideNumber);
             //else result.rotateLeft(sideNumber);
-
             System.out.println(result.toString());
         }
         System.out.print("End of the game!");
