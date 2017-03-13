@@ -223,22 +223,22 @@ public class AllSides {
             String randomLines = randomLinesNum == 0 ? "1" : "3";
             switch (randomSide) {
                 case 0:
-                    rotationMain(randomDirection, randomLines);
+                    rotate(Side.FRONT, randomDirection, randomLines);
                     break;
                 case 1:
-                    rightSwipe(0, randomDirection, randomLines);
+                    rotate(Side.RIGHT, randomDirection, randomLines);
                     break;
                 case 2:
-                    rightSwipe(1, randomDirection, randomLines);
+                    rotate(Side.BACK, randomDirection, randomLines);
                     break;
                 case 3:
-                    rightSwipe(2, randomDirection, randomLines);
+                    rotate(Side.LEFT, randomDirection, randomLines);
                     break;
                 case 4:
-                    upDownSwipe(Side.UPSIDE, randomDirection, randomLines);
+                    rotate(Side.UPSIDE, randomDirection, randomLines);
                     break;
                 case 5:
-                    upDownSwipe(Side.DOWNSIDE, randomDirection, randomLines);
+                    rotate(Side.DOWNSIDE, randomDirection, randomLines);
                     break;
             }
         }
