@@ -101,13 +101,19 @@ public class AllSides {
             for (int j = 0; j < memory[0][0].length; j++) {
                 System.arraycopy(help[5][j], 0, memory[sideOld][j], 0, memory[0][0].length);
             }
-            swipeAnySideRight(3);
-            swipeAnySideLeft(1);
+            if (side == Side.UPSIDE) {
+                swipeAnySideRight(3);
+                swipeAnySideLeft(1);
+            } else {
+                swipeAnySideRight(1);
+                swipeAnySideLeft(3);
+            }
         } else {
             if (side != Side.FRONT) {
                 int numberOfRotations = side == Side.BACK ? 1 : 2;
                 if (side == Side.RIGHT) numberOfRotations = 0;
                 for (int swipe = 0; swipe <= numberOfRotations; swipe++) {
+                    helpMemory(help);
                     for (int sideNew = 0; sideNew < 4; sideNew++) {
                         sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
                         for (int j = 0; j < memory[0][0].length; j++) {
@@ -124,9 +130,9 @@ public class AllSides {
     //поворот всего кубика направо. Приведение правой, задней или левой стороны к фронтальной
     private void rightSwipe(int numberOfRotations, Direction direction, String numberOfSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
-        helpMemory(help);
         int sideOld;
         for (int swipe = 0; swipe <= numberOfRotations; swipe++) {
+            helpMemory(help);
             for (int sideNew = 0; sideNew < 4; sideNew++) {
                 sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
                 for (int j = 0; j < memory[0][0].length; j++) {
@@ -137,8 +143,8 @@ public class AllSides {
             swipeAnySideLeft(5);
         }
         rotationMain(direction, numberOfSides);
-        helpMemory(help);
         for (int swipe = 0; swipe <= numberOfRotations; swipe++) {
+            helpMemory(help);
             for (int sideNew = 3; sideNew >= 0; sideNew--) {
                 sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
                 for (int j = 0; j < memory[0][0].length; j++) {
@@ -168,8 +174,13 @@ public class AllSides {
         for (int j = 0; j < memory[0][0].length; j++) {
             System.arraycopy(help[5][j], 0, memory[sideOld][j], 0, memory[0][0].length);
         }
-        swipeAnySideRight(3);
-        swipeAnySideLeft(1);
+        if (side == Side.UPSIDE) {
+            swipeAnySideRight(3);
+            swipeAnySideLeft(1);
+        } else {
+            swipeAnySideRight(1);
+            swipeAnySideLeft(3);
+        }
 
         rotationMain(direction, numberOfSides);
         helpMemory(help);
@@ -186,8 +197,13 @@ public class AllSides {
         for (int j = 0; j < memory[0][0].length; j++) {
             System.arraycopy(help[sideOld][j], 0, memory[5][j], 0, memory[0][0].length);
         }
-        swipeAnySideLeft(3);
-        swipeAnySideRight(1);
+        if (side == Side.UPSIDE) {
+            swipeAnySideRight(1);
+            swipeAnySideLeft(3);
+        } else {
+            swipeAnySideRight(3);
+            swipeAnySideLeft(1);
+        }
     }
 
     // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота) главный метод поворота
