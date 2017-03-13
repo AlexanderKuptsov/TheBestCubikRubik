@@ -282,13 +282,19 @@ public class AllSides {
         Direction direction, movementVertHor;
         for (int movements = difficulty; movements > 0; movements--) {
             System.out.print("\n" + movements + " movements left");
-            System.out.println("\nChoose the side front: right / back / left / upside / downside");
+            System.out.println("\nChoose the side: front / right / back / left / upside / downside  or write " +
+                    "\"show\" to see the cube");
             Scanner in = new Scanner((System.in));
             try {
                 side = Side.valueOf(in.next().toUpperCase());
                 System.out.println(side + " side");
             } catch (IllegalArgumentException e) { //проверка введенных данных
                 System.out.print("Write correct information!");
+                movements++;
+                continue;
+            }
+            if (side == Side.SHOW) {
+                System.out.println(result.toString());
                 movements++;
                 continue;
             }
