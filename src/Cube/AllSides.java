@@ -152,7 +152,7 @@ public class AllSides {
     }
 
     // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота) главный метод поворота
-    public void rotationMain(Direction direction, String numberOfSides) {
+    private void rotationMain(Direction direction, String numberOfSides) {
         Color[][][] help = new Color[6][3][3];
         helpMemory(help);
 
@@ -160,7 +160,7 @@ public class AllSides {
         boolean checkUp = numberOfSides.contains("1");
         boolean checkDown = numberOfSides.contains("3");
 
-        if (direction == Direction.RIGHT) {
+        if (direction == Direction.COUNTERCLOCKWISE) {
             if (checkUp) {
                 swipeAnySideLeft(4);
             }
@@ -177,7 +177,7 @@ public class AllSides {
         }
         int sideOld;
         for (int sideNew = 0; sideNew < 4; sideNew++) {
-            if (direction == Direction.RIGHT) {
+            if (direction == Direction.COUNTERCLOCKWISE) {
                 sideOld = sideNew != 0 ? sideNew - 1 : 3; // направо/налево
             } else {
                 sideOld = sideNew != 3 ? sideNew + 1 : 0;// направо/налево
@@ -190,12 +190,35 @@ public class AllSides {
         }
     }
 
+    public void rotate(Side side, Direction direction, String numberOfSides) {
+        switch (side) {
+            case FRONT:
+                rotationMain(direction, numberOfSides);
+                break;
+            case RIGHT:
+                rightSwipe(0, direction, numberOfSides);
+                break;
+            case BACK:
+                rightSwipe(1, direction, numberOfSides);
+                break;
+            case LEFT:
+                rightSwipe(2, direction, numberOfSides);
+                break;
+            case UPSIDE:
+                upDownSwipe(side, direction, numberOfSides);
+                break;
+            case DOWNSIDE:
+                upDownSwipe(side, direction, numberOfSides);
+                break;
+        }
+    }
+
     public void shuffle() { // перемешевание кубика
         int numberOfRotations = (int) (Math.random() * 500);
         for (int i = 0; i < numberOfRotations; i++) {
             int randomSide = (int) (Math.random() * 6);
             int randomDirectionNum = (int) (Math.random() * 2);
-            Direction randomDirection = randomDirectionNum == 0 ? Direction.RIGHT : Direction.LEFT;
+            Direction randomDirection = randomDirectionNum == 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
             int randomLinesNum = (int) (Math.random() * 2);
             String randomLines = randomLinesNum == 0 ? "1" : "3";
             switch (randomSide) {
@@ -269,7 +292,7 @@ public class AllSides {
                 movements++;
                 continue;
             }
-            System.out.println("Choose direction right / left");
+            System.out.println("Choose direction clockwise / counterclockwise");
             Scanner input = new Scanner((System.in));
             try {
                 direction = Direction.valueOf(input.next().toUpperCase());
@@ -298,26 +321,7 @@ public class AllSides {
                 movements++;
                 continue;
             }
-            switch (side) {
-                case FRONT:
-                    result.rotationMain(direction, numberOfSides);
-                    break;
-                case RIGHT:
-                    result.rightSwipe(0, direction, numberOfSides);
-                    break;
-                case BACK:
-                    result.rightSwipe(1, direction, numberOfSides);
-                    break;
-                case LEFT:
-                    result.rightSwipe(2, direction, numberOfSides);
-                    break;
-                case UPSIDE:
-                    result.upDownSwipe(side, direction, numberOfSides);
-                    break;
-                case DOWNSIDE:
-                    result.upDownSwipe(side, direction, numberOfSides);
-                    break;
-            }
+            result.rotate(side, direction, numberOfSides);
             // if (movementVertHor == Direction.VERTICAL) result.positionRotation(); // поворот всего кубика
             System.out.println(result.toString());
         }
