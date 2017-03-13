@@ -11,7 +11,7 @@ public class AllSides {
     private static Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
 
     //конструктор
-    private AllSides() { // собранный кубик
+    public AllSides() { // собранный кубик
         Color[] colors = new Color[6];
         colors[0] = Color.PINK;
         colors[1] = Color.YELLOW;
@@ -293,7 +293,7 @@ public class AllSides {
                 movements++;
                 continue;
             }
-            if (side == Side.SHOW) {
+            if (side == Side.SHOW) { // показывает состояние всех граней
                 System.out.println(result.toString());
                 movements++;
                 continue;
