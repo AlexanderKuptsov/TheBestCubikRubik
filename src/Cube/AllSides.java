@@ -82,6 +82,45 @@ public class AllSides {
         //////////////
 
     } */
+    public void moveToFront(Side side) { // делает выбранную грань фронтальной
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
+        helpMemory(help);
+        int sideOld;
+        if (side == Side.UPSIDE || side == Side.DOWNSIDE) {
+            sideOld = side == Side.UPSIDE ? 2 : 0;
+            int sideNew = side == Side.UPSIDE ? 0 : 2;
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[4][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideOld][j], 0, memory[4][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[sideNew][j], 0, memory[5][j], 0, memory[0][0].length);
+            }
+            for (int j = 0; j < memory[0][0].length; j++) {
+                System.arraycopy(help[5][j], 0, memory[sideOld][j], 0, memory[0][0].length);
+            }
+            swipeAnySideRight(3);
+            swipeAnySideLeft(1);
+        } else {
+            if (side != Side.FRONT) {
+                int numberOfRotations = side == Side.BACK ? 1 : 2;
+                if (side == Side.RIGHT) numberOfRotations = 0;
+                for (int swipe = 0; swipe <= numberOfRotations; swipe++) {
+                    for (int sideNew = 0; sideNew < 4; sideNew++) {
+                        sideOld = sideNew != 3 ? sideNew + 1 : 0; // направо/налево
+                        for (int j = 0; j < memory[0][0].length; j++) {
+                            System.arraycopy(help[sideOld][j], 0, memory[sideNew][j], 0, memory[0][0].length);
+                        }
+                    }
+                    swipeAnySideRight(4);
+                    swipeAnySideLeft(5);
+                }
+            }
+        }
+    }
+
     //поворот всего кубика направо. Приведение правой, задней или левой стороны к фронтальной
     private void rightSwipe(int numberOfRotations, Direction direction, String numberOfSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
@@ -153,7 +192,7 @@ public class AllSides {
 
     // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота) главный метод поворота
     private void rotationMain(Direction direction, String numberOfSides) {
-        Color[][][] help = new Color[6][3][3];
+        Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
 
         int[] difSides = Arrays.stream(numberOfSides.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
@@ -182,8 +221,8 @@ public class AllSides {
             } else {
                 sideOld = sideNew != 3 ? sideNew + 1 : 0;// направо/налево
             }
-            for (int i = 0; i < difSides.length; i++) {
-                int difSide = difSides[i] - 1;
+            for (int difSide1 : difSides) {
+                int difSide = difSide1 - 1;
                 System.arraycopy(help[sideOld][difSide], 0,
                         memory[sideNew][difSide], 0, memory[0][0].length);
             }
@@ -282,11 +321,26 @@ public class AllSides {
         Direction direction, movementVertHor;
         for (int movements = difficulty; movements > 0; movements--) {
             System.out.print("\n" + movements + " movements left");
-            System.out.println("\nChoose the side: front / right / back / left / upside / downside  or write " +
-                    "\"show\" to see the cube");
+            System.out.println("\nChoose the side: front / right / back / left / upside / downside  \n" +
+                    "Also you can write \"show\" to see the cube or \"tofront\" to make any side front");
             Scanner in = new Scanner((System.in));
             try {
                 side = Side.valueOf(in.next().toUpperCase());
+                if (side == Side.TOFRONT) {
+                    System.out.println("ToFRONT");
+                    System.out.println("Choose the side you want to make front: front / right / back / left / upside / downside");
+                    Scanner information = new Scanner((System.in));
+                    try {
+                        side = Side.valueOf(information.next().toUpperCase());
+                        result.moveToFront(side);
+                        System.out.println(result.toString());
+                        continue;
+                    } catch (IllegalArgumentException e) { //проверка введенных данных
+                        System.out.print("Write correct information!");
+                        movements++;
+                        continue;
+                    }
+                }
                 System.out.println(side + " side");
             } catch (IllegalArgumentException e) { //проверка введенных данных
                 System.out.print("Write correct information!");
@@ -298,6 +352,7 @@ public class AllSides {
                 movements++;
                 continue;
             }
+
             System.out.println("Choose direction clockwise / counterclockwise");
             Scanner input = new Scanner((System.in));
             try {
