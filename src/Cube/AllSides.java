@@ -1,5 +1,8 @@
 package Cube;
 
+
+import jdk.management.resource.internal.inst.SimpleAsynchronousFileChannelImplRMHooks;
+
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -8,7 +11,7 @@ import java.util.Scanner;
  * Created by shurik on 15.02.2017.
  */
 public class AllSides {
-    private static Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
+    private Color[][][] memory = new Color[6][3][3]; //хранит состояние кубика Рубика
 
     //конструктор
     public AllSides() { // собранный кубик
@@ -50,7 +53,32 @@ public class AllSides {
         return str.toString();
     }
 
-    private static void helpMemory(Color[][][] help) { // вспомогательный массив
+    public Color getCellColor(Side side, int numberLine, int numberColumn) {
+        Color cellColor = null;
+        switch (side) {
+            case FRONT:
+                cellColor = memory[0][numberLine][numberColumn];
+                break;
+            case RIGHT:
+                cellColor = memory[1][numberLine][numberColumn];
+                break;
+            case BACK:
+                cellColor = memory[2][numberLine][numberColumn];
+                break;
+            case LEFT:
+                cellColor = memory[3][numberLine][numberColumn];
+                break;
+            case UPSIDE:
+                cellColor = memory[4][numberLine][numberColumn];
+                break;
+            case DOWNSIDE:
+                cellColor = memory[5][numberLine][numberColumn];
+                break;
+        }
+        return cellColor;
+    }
+
+    private void helpMemory(Color[][][] help) { // вспомогательный массив
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < memory[0][0].length; j++) {
                 System.arraycopy(memory[i][j], 0, help[i][j], 0, memory[0][0].length);
@@ -128,7 +156,7 @@ public class AllSides {
     }
 
     //поворот всего кубика направо. Приведение правой, задней или левой стороны к фронтальной
-    private void rightSwipe(int numberOfRotations, Direction direction, String numberOfSides) {
+    private void rightSwipe(int numberOfRotations, Direction direction, int[] numberOfSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         int sideOld;
         for (int swipe = 0; swipe <= numberOfRotations; swipe++) {
@@ -157,7 +185,7 @@ public class AllSides {
     }
 
     //поворот всего кубика вверх/вниз. Приведение верхней или нижней грани к фронтальной
-    private void upDownSwipe(Side side, Direction direction, String numberOfSides) {
+    private void upDownSwipe(Side side, Direction direction, int[] numberOfSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
         int sideOld = side == Side.UPSIDE ? 2 : 0;
@@ -207,14 +235,15 @@ public class AllSides {
     }
 
     // поворот фронтальной стороны( с возможным выбором колличества слоев для поворота) главный метод поворота
-    private void rotationMain(Direction direction, String numberOfSides) {
+    private void rotationMain(Direction direction, int[] difSides) {
         Color[][][] help = new Color[6][memory[0][0].length][memory[0][0].length];
         helpMemory(help);
-
-        int[] difSides = Arrays.stream(numberOfSides.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
-        boolean checkUp = numberOfSides.contains("1");
-        boolean checkDown = numberOfSides.contains("3");
-
+        boolean checkUp = false;
+        boolean checkDown = false;
+        for (int difSide1 : difSides) {
+            if (difSide1 == 1) checkUp = true;
+            if (difSide1 == 3) checkDown = true;
+        }
         if (direction == Direction.COUNTERCLOCKWISE) {
             if (checkUp) {
                 swipeAnySideLeft(4);
@@ -245,7 +274,7 @@ public class AllSides {
         }
     }
 
-    public void rotate(Side side, Direction direction, String numberOfSides) {
+    public void rotate(Side side, Direction direction, int[] numberOfSides) {
         switch (side) {
             case FRONT:
                 rotationMain(direction, numberOfSides);
@@ -275,7 +304,8 @@ public class AllSides {
             int randomDirectionNum = (int) (Math.random() * 2);
             Direction randomDirection = randomDirectionNum == 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
             int randomLinesNum = (int) (Math.random() * 2);
-            String randomLines = randomLinesNum == 0 ? "1" : "3";
+            int[] randomLines = new int[1];
+            randomLines[0] = randomLinesNum == 0 ? 1 : 3;
             switch (randomSide) {
                 case 0:
                     rotate(Side.FRONT, randomDirection, randomLines);
@@ -297,6 +327,21 @@ public class AllSides {
                     break;
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AllSides allSides = (AllSides) o;
+
+        return Arrays.deepEquals(memory, allSides.memory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(memory);
     }
 
     public static void main(String[] args) {
@@ -398,7 +443,8 @@ public class AllSides {
                 movements++;
                 continue;
             }
-            result.rotate(side, direction, numberOfSides);
+            int[] difSides = Arrays.stream(numberOfSides.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+            result.rotate(side, direction, difSides);
             // if (movementVertHor == Direction.VERTICAL) result.positionRotation(); // поворот всего кубика
             System.out.println(result.toString());
         }
